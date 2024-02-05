@@ -1,11 +1,11 @@
 const express = require("express");
-const connectDB = require("./config/db");
+// const connectDB = require("./config/db");
 // const userRoutes = require("./routes/userRoutes");
 // const chatRoutes = require("./routes/chatRoutes");
 // const User = require("./models/userModel");
 // const messageRoutes = require("./routes/messageRoutes");
 const cors = require('cors');
-connectDB();
+// connectDB();
 const app = express();
 
 app.use(cors()); // allow front api's
