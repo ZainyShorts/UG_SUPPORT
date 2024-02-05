@@ -1,6 +1,6 @@
 const express = require("express");
 const connectDB = require("./config/db");
-// const User = require("./models/userModel");
+const User = require("./models/userModel");
 const { authUser, allUsers, editProfile, registerUser, changeStatus, userById} = require('./controllers/userControllers');
 const {accessChat,fetchChats} = require('./controllers/chatControllers');
 const { allMessages,sendMessage} = require('./controllers/messageControllers');
@@ -39,43 +39,43 @@ app.use(express.json()); // to accept json data
 
 const PORT = 5000;
 
-app.listen(
+const server = app.listen(
   PORT,
   console.log(`Server running on PORT ${PORT}...`)
 );
-// const clients = {};
-// const io = require("socket.io")(server, {
-//   pingTimeout: 60000,
-//   cors: {
-//     origin: "http://localhost:3000",
-//     // credentials: true,
-//   },
-// });
+const clients = {};
+const io = require("socket.io")(server, {
+  pingTimeout: 60000,
+  cors: {
+    origin: "http://localhost:3000",
+    // credentials: true,
+  },
+});
 
-// io.on("connection", (socket) => {
-//   console.log("Connected to socket.io");
-//   const userId = socket.handshake.auth.token
+io.on("connection", (socket) => {
+  console.log("Connected to socket.io");
+  const userId = socket.handshake.auth.token
   
-//   User.updateOne({_id:userId},{$set:{'online':true}}).then(re=>{
-//     io.emit('user-online')
-//   })
+  User.updateOne({_id:userId},{$set:{'online':true}}).then(re=>{
+    io.emit('user-online')
+  })
 
 
-// socket.on('join chat', (room) => {
-//     socket.join(room);
-//     if (!clients[room]) {
-//         clients[room] = [];
-//     }
-//     clients[room].push(socket);
-// });
+socket.on('join chat', (room) => {
+    socket.join(room);
+    if (!clients[room]) {
+        clients[room] = [];
+    }
+    clients[room].push(socket);
+});
 
-// socket.on("new message", (newMessageRecieved,room) => {
-//     io.to(room).emit('new message', newMessageRecieved,userId);
-//   });
+socket.on("new message", (newMessageRecieved,room) => {
+    io.to(room).emit('new message', newMessageRecieved,userId);
+  });
   
-//   socket.on('disconnect', () => {
-//     User.updateOne({_id:userId},{$set:{'online':false}}).then(res=>{
-//      io.emit('user-offline')
-// });
-// });
-// });
+  socket.on('disconnect', () => {
+    User.updateOne({_id:userId},{$set:{'online':false}}).then(res=>{
+     io.emit('user-offline')
+});
+});
+});
