@@ -25,8 +25,8 @@ app.use(express.json()); // to accept json data
   app.post("/api/chat/",protect, accessChat)
   app.get("/api/chat/",protect,  fetchChats)
 //MESSAGES ROUTES LIST
-  app.get("/:chatId",protect, allMessages);
-  app.post("/",protect, sendMessage);
+  app.get("/api/messages/:chatId",protect, allMessages);
+  app.post("/api/messages",protect, sendMessage);
 
 
 
