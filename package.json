@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node api/index.js"
   },
   "keywords": [
     "mern",
@@ -17,7 +17,7 @@
     "colors": "^1.4.0",
     "cors": "^2.8.5",
     "dotenv": "^9.0.2",
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "express-async-handler": "^1.1.4",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.9",
