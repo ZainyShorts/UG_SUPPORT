@@ -7,7 +7,10 @@ const connectDB = require("./config/db");
 const cors = require('cors');
 connectDB();
 const app = express();
-const { authUser } = require('./controllers/userControllers')
+const { 
+  authUser, allUsers, editProfile, registerUser, changeStatus, userById
+ } = require('./controllers/userControllers');
+const { protect } = require("./middleware/authMiddleware");
 app.use(cors()); // allow front api's
 app.use(express.json()); // to accept json data
 
@@ -15,8 +18,13 @@ app.use(express.json()); // to accept json data
 // app.use("/api/user", userRoutes);
 // app.use("/api/chat", chatRoutes);
 // app.use("/api/message", messageRoutes);
-
-  app.post("/login", authUser);
+//USER ROUTES LIST
+  app.post("/api/user/login", authUser);
+  app.get("/api/user/",protect, allUsers);
+  app.patch("/api/user/edit",protect,editProfile);
+  app.post("/api/user/",registerUser)
+  app.get("/api/user/status",protect,changeStatus)
+  app.get("/api/user/userByToken",protect,userById)
 
 
   app.get("/", (req, res) => {
