@@ -1,23 +1,19 @@
 const express = require("express");
 const connectDB = require("./config/db");
-// const userRoutes = require("./routes/userRoutes");
-// const chatRoutes = require("./routes/chatRoutes");
 // const User = require("./models/userModel");
-// const messageRoutes = require("./routes/messageRoutes");
+const { authUser, allUsers, editProfile, registerUser, changeStatus, userById} = require('./controllers/userControllers');
+const {accessChat,fetchChats} = require('./controllers/chatControllers');
+const { allMessages,sendMessage} = require('./controllers/messageControllers');
+const { protect } = require("./middleware/authMiddleware");
 const cors = require('cors');
+
+
 connectDB();
 const app = express();
-const { 
-  authUser, allUsers, editProfile, registerUser, changeStatus, userById
- } = require('./controllers/userControllers');
-const { protect } = require("./middleware/authMiddleware");
 app.use(cors()); // allow front api's
 app.use(express.json()); // to accept json data
 
 
-// app.use("/api/user", userRoutes);
-// app.use("/api/chat", chatRoutes);
-// app.use("/api/message", messageRoutes);
 //USER ROUTES LIST
   app.post("/api/user/login", authUser);
   app.get("/api/user/",protect, allUsers);
@@ -25,6 +21,13 @@ app.use(express.json()); // to accept json data
   app.post("/api/user/",registerUser)
   app.get("/api/user/status",protect,changeStatus)
   app.get("/api/user/userByToken",protect,userById)
+//CHAT ROUTES LIST
+  app.post("/api/chat/",protect, accessChat)
+  app.get("/api/chat/",protect,  fetchChats)
+//MESSAGES ROUTES LIST
+  app.get("/:chatId").get(protect, allMessages);
+  app.post("/").post(protect, sendMessage);
+
 
 
   app.get("/", (req, res) => {
