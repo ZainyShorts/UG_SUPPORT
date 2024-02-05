@@ -1,20 +1,22 @@
 const express = require("express");
 const connectDB = require("./config/db");
-const userRoutes = require("./routes/userRoutes");
-const chatRoutes = require("./routes/chatRoutes");
+// const userRoutes = require("./routes/userRoutes");
+// const chatRoutes = require("./routes/chatRoutes");
 // const User = require("./models/userModel");
-const messageRoutes = require("./routes/messageRoutes");
+// const messageRoutes = require("./routes/messageRoutes");
 const cors = require('cors');
 connectDB();
 const app = express();
-
+const { authUser } = require('./controllers/userControllers')
 app.use(cors()); // allow front api's
 app.use(express.json()); // to accept json data
 
 
-app.use("/api/user", userRoutes);
-app.use("/api/chat", chatRoutes);
-app.use("/api/message", messageRoutes);
+// app.use("/api/user", userRoutes);
+// app.use("/api/chat", chatRoutes);
+// app.use("/api/message", messageRoutes);
+
+  app.post("/login", authUser);
 
 
   app.get("/", (req, res) => {
