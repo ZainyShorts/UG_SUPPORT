@@ -91,4 +91,14 @@ const sendMessage = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { allMessages, sendMessage };
+const deleteMessage = asyncHandler(async (req, res) => {
+
+  try {
+    await Message.findByIdAndDelete({_id:req.params.msgId });
+    res.status(200).json({'success':true});
+  } catch (error) {
+    res.status(500).json({'success':true});
+  }
+});
+
+module.exports = { allMessages, sendMessage, deleteMessage };

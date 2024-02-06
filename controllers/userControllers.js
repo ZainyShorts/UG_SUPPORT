@@ -158,6 +158,18 @@ const changeStatus = asyncHandler(async(req,res)=>{
   }
 })
 
+const isOnline = asyncHandler(async(req,res)=>{
+  try
+  {
+    const user = await User.findOne({_id:req.user._id})
+    res.status(200).send({success:true,isOnline:user.online});
+  }
+  catch(e)
+  {
+    res.status(500).send(false);
+  }
+})
 
 
-module.exports = { allUsers, registerUser, authUser,editProfile,userById,changeStatus };
+
+module.exports = { allUsers, registerUser, authUser,editProfile,userById,changeStatus,isOnline };
