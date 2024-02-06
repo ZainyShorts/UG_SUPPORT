@@ -1,6 +1,5 @@
 const express = require("express");
 const connectDB = require("./config/db");
-const User = require("./models/userModel");
 const { authUser, allUsers, editProfile, registerUser, changeStatus, userById, isOnline} = require('./controllers/userControllers');
 const {accessChat,fetchChats} = require('./controllers/chatControllers');
 const { allMessages,sendMessage,deleteMessage} = require('./controllers/messageControllers');
