@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const Chat = require("../models/chatModel");
 const generateToken = require("../config/generateToken");
-
+const bcrypt = require("bcryptjs");
 
 const allUsers = asyncHandler(async (req, res) => {
   const keyword = req.query.search
@@ -163,7 +163,8 @@ const isOnline = asyncHandler(async(req,res)=>{
   }
 })
 const resetPassword = asyncHandler(async(req,res)=>{
-  const {password,confirmPassword,_id} = body;   
+  const {password,confirmPassword,_id} = req.body;  
+ 
   try
   {
     if(!password || !confirmPassword)
@@ -176,7 +177,10 @@ const resetPassword = asyncHandler(async(req,res)=>{
     }
     const salt = await bcrypt.genSalt(10);
     const newPassword = await bcrypt.hash(password, salt);
+    console.log(newPassword)
     const user = await User.findOne({_id})
+    console.log(_id)
+    console.log(user._id)
     if(user._id == _id){
       await User.updateOne({_id},{$set:{password:newPassword}})
       res.status(200).send({success:true});
