@@ -3,9 +3,7 @@ const User = require("../models/userModel");
 const Chat = require("../models/chatModel");
 const generateToken = require("../config/generateToken");
 
-//@description     Get or Search all users
-//@route           GET /api/user?search=
-//@access          Public
+
 const allUsers = asyncHandler(async (req, res) => {
   const keyword = req.query.search
     ? {
@@ -20,9 +18,6 @@ const allUsers = asyncHandler(async (req, res) => {
   res.send(users);
 });
 
-//@description     Register new user
-//@route           POST /api/user/
-//@access          Public
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, pic,isAdmin } = req.body;
   if (!name || !email || !password || !pic ) {
@@ -73,9 +68,6 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-//@description     Auth the user
-//@route           POST /api/users/login
-//@access          Public
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   
@@ -94,6 +86,7 @@ const authUser = asyncHandler(async (req, res) => {
     throw new Error("Invalid Email or Password");
   }
 });
+
 const editProfile = asyncHandler(async (req, res) => {
     try{
       let user = await User.findOne({_id:req.user._id});
@@ -169,7 +162,36 @@ const isOnline = asyncHandler(async(req,res)=>{
     res.status(500).send(false);
   }
 })
+const resetPassword = asyncHandler(async(req,res)=>{
+  const {password,confirmPassword,_id} = body;   
+  try
+  {
+    if(!password || !confirmPassword)
+    {
+      res.status(400).json({'success':false,error:"Please fill empty fields"})
+    }
+    if(password != confirmPassword )
+    {
+      res.status(400).json({'success':false,error:"Password not match"})
+    }
+    const salt = await bcrypt.genSalt(10);
+    const newPassword = await bcrypt.hash(password, salt);
+    const user = await User.findOne({_id})
+    if(user._id == _id){
+      await User.updateOne({_id},{$set:{password:newPassword}})
+      res.status(200).send({success:true});
+    }
+    else
+    {
+      res.status(401).send({success:false,error:'User not found'});
+    }
+  }
+  catch(e)
+  {
+    res.status(500).send({success:false});
+  }
+})
 
 
 
-module.exports = { allUsers, registerUser, authUser,editProfile,userById,changeStatus,isOnline };
+module.exports = { resetPassword, allUsers, registerUser, authUser,editProfile,userById,changeStatus,isOnline };

@@ -1,6 +1,6 @@
 const express = require("express");
 const connectDB = require("./config/db");
-const { authUser, allUsers, editProfile, registerUser, changeStatus, userById, isOnline} = require('./controllers/userControllers');
+const { resetPassword, authUser, allUsers, editProfile, registerUser, changeStatus, userById, isOnline} = require('./controllers/userControllers');
 const {accessChat,fetchChats} = require('./controllers/chatControllers');
 const { allMessages,sendMessage,deleteMessage} = require('./controllers/messageControllers');
 const { protect } = require("./middleware/authMiddleware");
@@ -21,6 +21,7 @@ app.use(express.json()); // to accept json data
   app.get("/api/user/status",protect,changeStatus)
   app.get("/isOnline",protect,isOnline)
   app.get("/api/user/userByToken",protect,userById)
+  app.post("/api/user/reset",resetPassword)
 //CHAT ROUTES LIST
   app.post("/api/chat/",protect, accessChat)
   app.get("/api/chat/",protect,  fetchChats)
