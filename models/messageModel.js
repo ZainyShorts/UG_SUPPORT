@@ -4,6 +4,7 @@ const messageSchema = mongoose.Schema(
   {
     sender: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     content: { type: String, trim: true },
+    recording:[],
     chat: { type: mongoose.Schema.Types.ObjectId, ref: "Chat" },
     readBy:{type:Boolean,default:false,},
     time:{type:"String",required:true},
