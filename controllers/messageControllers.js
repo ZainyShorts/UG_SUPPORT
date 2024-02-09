@@ -51,13 +51,10 @@ const allMessages = asyncHandler(async (req, res) => {
  
 
 const sendMessage = asyncHandler(async (req, res) => {
-  const {type, content, chatId,recording } = req.body;
+  const {type, content, chatId } = req.body;
 
-  if(type!='VOICE')
-  {
-
+  
   if (!content || !chatId || !type) {
-    // console.log("Invalid data passed into request");
     return res.status(400);
   }
 
@@ -68,15 +65,7 @@ const sendMessage = asyncHandler(async (req, res) => {
     time:result(),
     type:type
   };
-}else{
-  var newMessage = {
-    sender: req.user._id,
-    recording: recording,
-    chat: chatId,
-    time:result(),
-    type:type
-  };
-}
+
 
   try {
     var message = await Message.create(newMessage);
