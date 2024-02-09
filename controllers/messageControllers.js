@@ -100,5 +100,14 @@ const deleteMessage = asyncHandler(async (req, res) => {
     res.status(500).json({'success':true});
   }
 });
+const lastMessage = asyncHandler(async (req, res) => {
 
-module.exports = { allMessages, sendMessage, deleteMessage };
+  try {
+    await Message.updateOne({_id:req.body.msgId },{'readBy':true});
+    res.status(200).json({'success':true});
+  } catch (error) {
+    res.status(500).json({'success':true});
+  }
+});
+
+module.exports = { lastMessage, allMessages, sendMessage, deleteMessage };
