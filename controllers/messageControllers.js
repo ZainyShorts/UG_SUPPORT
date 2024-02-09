@@ -103,7 +103,7 @@ const deleteMessage = asyncHandler(async (req, res) => {
 const lastMessage = asyncHandler(async (req, res) => {
 
   try {
-    await Message.updateOne({_id:req.body.msgId },{'readBy':true});
+    await Message.findByIdAndUpdate({_id:req.params.msgId },{$set:{'readBy':true}});
     res.status(200).json({'success':true});
   } catch (error) {
     res.status(500).json({'success':true});
