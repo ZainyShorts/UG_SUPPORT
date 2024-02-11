@@ -141,8 +141,7 @@ const userById = asyncHandler(async (req, res) => {
 const changeStatus = asyncHandler(async(req,res)=>{
   try
   {
-    console.log('Hit')
-    await User.updateOne({_id:req.user._id},{$set:{'online':false}})
+    await User.findByIdAndUpdate({_id:req.user._id},{$set:{'online':false}})
     res.status(200).send(true);
   }
   catch(e)
