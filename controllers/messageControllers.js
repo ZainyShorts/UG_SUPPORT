@@ -106,5 +106,14 @@ const lastMessage = asyncHandler(async (req, res) => {
     res.status(500).json({'success':true});
   }
 });
+const clearMessages = asyncHandler(async (req, res) => {
 
-module.exports = { lastMessage, allMessages, sendMessage, deleteMessage };
+  try {
+    await Message.deleteMany({});
+    res.status(200).json({'success':true});
+  } catch (error) {
+    res.status(500).json({'success':true});
+  }
+});
+
+module.exports = {clearMessages, lastMessage, allMessages, sendMessage, deleteMessage };

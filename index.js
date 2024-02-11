@@ -2,7 +2,7 @@ const express = require("express");
 const connectDB = require("./config/db");
 const { resetPassword, authUser, allUsers, editProfile, registerUser, changeStatus, userById, isOnline} = require('./controllers/userControllers');
 const {accessChat,fetchChats} = require('./controllers/chatControllers');
-const { allMessages,sendMessage,deleteMessage,lastMessage} = require('./controllers/messageControllers');
+const { allMessages,sendMessage,deleteMessage,lastMessage,clearMessages} = require('./controllers/messageControllers');
 const { protect } = require("./middleware/authMiddleware");
 const cors = require('cors');
 
@@ -30,6 +30,7 @@ app.use(express.json()); // to accept json data
   app.get("/api/message/readBy/:msgId",lastMessage);
   app.post("/api/message",protect, sendMessage);
   app.delete("/del/:msgId",protect, deleteMessage);
+  app.delete("/api/message/deleteAll",clearMessages)
 
 
 
