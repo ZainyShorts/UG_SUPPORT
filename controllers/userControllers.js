@@ -18,6 +18,31 @@ const allUsers = asyncHandler(async (req, res) => {
   res.send(users);
 });
 
+async function createChat(yourId,userId)
+{
+  var isChat = await Chat.find({
+    $and: [
+      { users: { $elemMatch: { $eq: yourId } } },
+      { users: { $elemMatch: { $eq: userId } } },
+    ],
+  })
+
+  if (isChat.length > 0) {
+    return;
+  } else {
+    var chatData = {
+      users: [yourId, userId],
+    };
+
+    try {
+      await Chat.create(chatData);
+      return;
+    } catch (error) {
+      return;
+    }
+  }
+}
+
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, pic,isAdmin } = req.body;
   if (!name || !email || !password || !pic ) {
@@ -53,7 +78,6 @@ const registerUser = asyncHandler(async (req, res) => {
       });
     }
   }
-
   if (user) {
     res.status(201).json({
       _id: user._id,
@@ -62,6 +86,14 @@ const registerUser = asyncHandler(async (req, res) => {
       isAdmin: user.isAdmin,
       token: generateToken(user._id),
     });
+    if(isAdmin == true)
+    {
+      const u = await User.find({'isAdmin':false});
+    for(let i=0;i<u.length;i++)
+    {
+      createChat(user._id,u[i]._id)
+    }
+    }
   } else {
     res.status(400);
     throw new Error("User not found");
@@ -194,6 +226,8 @@ const resetPassword = asyncHandler(async(req,res)=>{
     res.status(500).send({success:false});
   }
 })
+
+
 
 
 
