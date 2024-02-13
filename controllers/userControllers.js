@@ -88,7 +88,7 @@ const registerUser = asyncHandler(async (req, res) => {
     });
     if(isAdmin == true)
     {
-      const u = await User.find({'isAdmin':false});
+      const u = await User.find();
     for(let i=0;i<u.length;i++)
     {
       createChat(user._id,u[i]._id)

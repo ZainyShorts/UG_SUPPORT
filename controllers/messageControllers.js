@@ -51,7 +51,7 @@ const allMessages = asyncHandler(async (req, res) => {
  
 
 const sendMessage = asyncHandler(async (req, res) => {
-  const {type, content, chatId } = req.body;
+  const {type, content, chatId ,date} = req.body;
 
   
   if (!content || !chatId || !type) {
@@ -62,7 +62,7 @@ const sendMessage = asyncHandler(async (req, res) => {
     sender: req.user._id,
     content: content,
     chat: chatId,
-    time:result(),
+    time:date,
     type:type
   };
 
