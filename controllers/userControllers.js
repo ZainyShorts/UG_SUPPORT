@@ -84,15 +84,21 @@ const registerUser = asyncHandler(async (req, res) => {
         var chatData = {
           users: [user._id, element._id],
         };
-       const chat =  await Chat.create(chatData);
-        var newMessage = {
+       const chat =  await Chat.create(chatData)
+        await Message.create({
           sender: element._id,
-          content: 'Hello sir how can i help you',
+          content: `"Welcome to UG Support! 🌟
+
+                    No problem is too big or too small for us to handle. Whether you have a question,
+                    concern, or need assistance, our dedicated team is here to support you every step
+                    of the way. Feel free to reach out anytime, and we'll ensure your experience
+                    with us is nothing short of exceptional. Your satisfaction is our top priority!
+                    💬✨ #UGSupport"
+          `,
           chat: chat._id,
           time:currentDateAndTimeFormatted(),
           type:'TEXT'
-     }
-         await Message.create(newMessage);
+     });
       });
     }
   }
