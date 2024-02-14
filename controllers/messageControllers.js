@@ -2,36 +2,15 @@ const asyncHandler = require("express-async-handler");
 const Message = require("../models/messageModel");
 const User = require("../models/userModel");
 const Chat = require("../models/chatModel");
+const fs  = require('fs');
+const path = require("path");
+const cloudinary = require('cloudinary').v2;
 
-//@description     Get all Messages
-//@route           GET /api/Message/:chatId
-//@access          Protected
-function result()
-{
-  const currentDate = new Date();
 
-// Options for formatting the time
-const timeOptions = {
-  hour: 'numeric',
-  minute: 'numeric',
-  hour12: true
-};
+var newMessage;              
 
-// Options for formatting the date
-const dateOptions = {
-  month: 'numeric',
-  day: 'numeric',
-  year: 'numeric'
-};
 
-// Generate the formatted time and date strings
-const formattedTime = currentDate.toLocaleString('en-US', timeOptions);
-const formattedDate = currentDate.toLocaleString('en-US', dateOptions);
 
-// Combine the time and date strings in the desired order
-const result = `${formattedTime} ${formattedDate}`;
-return result;
-}
 
 const allMessages = asyncHandler(async (req, res) => {
 
@@ -51,22 +30,66 @@ const allMessages = asyncHandler(async (req, res) => {
  
 
 const sendMessage = asyncHandler(async (req, res) => {
-  const {type, content, chatId ,date} = req.body;
+  cloudinary.config({
+    cloud_name: 'dklqbx5k0',
+    api_key: '586219556714458',
+    api_secret: 'JY7qKHk1QeMN5FqaW4lPf9N3k1E'
+  });
 
-  
-  if (!content || !chatId || !type) {
+  const {type, content, chatId ,date} = req.body;
+    
+  if (!content || !chatId || !type || !date) {
     return res.status(400);
   }
 
-  var newMessage = {
-    sender: req.user._id,
-    content: content,
-    chat: chatId,
-    time:date,
-    type:type
-  };
-
-
+  
+  if(type == 'VOICE')
+  {
+    const random = Math.random()
+    const file = `${Date.now()}${random}_.mp3`
+    let filePath = `/files/${file}`;
+    let buffer = Buffer.from(content.slice(22),"base64")
+    fs.writeFileSync(path.join(__dirname,filePath),buffer)
+    const mp3FilePath = path.join(`${__dirname}/files`,file);
+   await cloudinary.uploader.upload(mp3FilePath, ({ resource_type: 'raw' }), (error, result) => {
+      if (error) {
+        newMessage = {
+          sender: req.user._id,
+          content: 'corrupted audio',
+          chat: chatId,
+          time:date,
+          type:type
+          };
+      } else {
+        console.log(result.secure_url)
+         newMessage = {
+          sender: req.user._id,
+          content: result.secure_url,
+          chat: chatId,
+          time:date,
+          type:type
+          };
+      }
+      fs.unlink(path.join(__dirname, filePath), (error) => {
+        if (error) {
+            console.error('Error deleting file:', error);
+        } else {
+            console.log('File deleted successfully');
+        }
+    });
+    });
+         
+  }
+ else{
+    newMessage = {
+     sender: req.user._id,
+     content: content,
+     chat: chatId,
+     time:date,
+     type:type
+}
+ }
+  
   try {
     var message = await Message.create(newMessage);
 

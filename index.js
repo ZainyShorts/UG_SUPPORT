@@ -4,11 +4,13 @@ const { resetPassword, authUser, allUsers, editProfile, registerUser, changeStat
 const {accessChat,fetchChats} = require('./controllers/chatControllers');
 const { allMessages,sendMessage,deleteMessage,lastMessage,clearMessages} = require('./controllers/messageControllers');
 const { protect } = require("./middleware/authMiddleware");
+const bodyParser = require('body-parser');
 const cors = require('cors');
-
 
 connectDB();
 const app = express();
+app.use(bodyParser.json({ limit: '1000mb' }));
+app.use(bodyParser.urlencoded({ limit: '1000mb', extended: true }));
 app.use(cors()); // allow front api's
 app.use(express.json()); // to accept json data
 
