@@ -3,6 +3,15 @@ const User = require("../models/userModel");
 const Chat = require("../models/chatModel");
 const generateToken = require("../config/generateToken");
 const bcrypt = require("bcryptjs");
+const Message = require("../models/messageModel");
+const format =  require("date-fns");
+function currentDateAndTimeFormatted()
+{
+    const currentDate = new Date();
+    const formattedDate = format(currentDate, "h:mm a M/d/yyyy");
+    return formattedDate;
+    
+}
 
 const allUsers = asyncHandler(async (req, res) => {
   const keyword = req.query.search
@@ -65,16 +74,25 @@ const registerUser = asyncHandler(async (req, res) => {
     pic,
     isAdmin:isAdmin?true:false
   });
-  if(isAdmin!=true || !isAdmin)
+  if(!isAdmin)
   {
     const admins = await User.find({isAdmin:true});
     if(admins)
     {
+
     admins.forEach(async (element)=> {
         var chatData = {
           users: [user._id, element._id],
         };
-        await Chat.create(chatData);
+       const chat =  await Chat.create(chatData);
+        var newMessage = {
+          sender: element._id,
+          content: 'Hello sir how can i help you',
+          chat: chat._id,
+          time:currentDateAndTimeFormatted(),
+          type:'TEXT'
+     }
+         await Message.create(newMessage);
       });
     }
   }
