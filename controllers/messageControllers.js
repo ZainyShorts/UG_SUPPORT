@@ -31,9 +31,9 @@ const allMessages = asyncHandler(async (req, res) => {
 
 const sendMessage = asyncHandler(async (req, res) => {
   cloudinary.config({
-    cloud_name: 'dklqbx5k0',
-    api_key: '586219556714458',
-    api_secret: 'JY7qKHk1QeMN5FqaW4lPf9N3k1E'
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET
   });
 
   const {type, content, chatId ,date} = req.body;
@@ -61,7 +61,6 @@ const sendMessage = asyncHandler(async (req, res) => {
           type:type
           };
       } else {
-        console.log(result.secure_url)
          newMessage = {
           sender: req.user._id,
           content: result.secure_url,
@@ -70,13 +69,12 @@ const sendMessage = asyncHandler(async (req, res) => {
           type:type
           };
       }
-      fs.unlink(path.join(__dirname, filePath), (error) => {
-        if (error) {
-            console.error('Error deleting file:', error);
-        } else {
-            console.log('File deleted successfully');
-        }
-    });
+      try{
+        fs.unlink(path.join(__dirname, filePath), (error) => {
+        });
+      }catch(e)
+      {  
+      }
     });
          
   }

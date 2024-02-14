@@ -6,6 +6,7 @@ const { allMessages,sendMessage,deleteMessage,lastMessage,clearMessages} = requi
 const { protect } = require("./middleware/authMiddleware");
 const bodyParser = require('body-parser');
 const cors = require('cors');
+require('dotenv').config();
 
 connectDB();
 const app = express();
