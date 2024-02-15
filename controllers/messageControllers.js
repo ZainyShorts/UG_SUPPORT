@@ -45,13 +45,19 @@ const sendMessage = asyncHandler(async (req, res) => {
   
   if(type == 'VOICE')
   {
-    const random = Math.random()
-    const file = `${Date.now()}${random}_.mp3`
-    let filePath = `/files/${file}`;
-    let buffer = Buffer.from(content.slice(22),"base64")
-    fs.writeFileSync(path.join(__dirname,filePath),buffer)
-    const mp3FilePath = path.join(`${__dirname}/files`,file);
-   await cloudinary.uploader.upload(mp3FilePath, ({ resource_type: 'raw' }), (error, result) => {
+    // const random = Math.random()
+    // const file = `${Date.now()}${random}_.mp3`
+    // let filePath = `/files/${file}`;
+    // let buffer = Buffer.from(content.slice(22),"base64")
+    // fs.writeFileSync(path.join(__dirname,filePath),buffer)
+    // const mp3FilePath = path.join(`${__dirname}/files`,file);
+   await cloudinary.uploader.upload(content, ({ 
+    // resource_type: 'raw',
+    resource_type: 'video',
+    folder: 'audio', // optional: specify a folder in your Cloudinary account
+    overwrite: true, // optional: overwrite existing file with same name
+    resource_type: 'video' 
+   }), (error, result) => {
       if (error) {
         newMessage = {
           sender: req.user._id,
@@ -69,12 +75,12 @@ const sendMessage = asyncHandler(async (req, res) => {
           type:type
           };
       }
-      try{
-        fs.unlink(path.join(__dirname, filePath), (error) => {
-        });
-      }catch(e)
-      {  
-      }
+      // try{
+      //   fs.unlink(path.join(__dirname, filePath), (error) => {
+      //   });
+      // }catch(e)
+      // {  
+      // }
     });
          
   }

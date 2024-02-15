@@ -4,14 +4,7 @@ const Chat = require("../models/chatModel");
 const generateToken = require("../config/generateToken");
 const bcrypt = require("bcryptjs");
 const Message = require("../models/messageModel");
-const format =  require("date-fns");
-function currentDateAndTimeFormatted()
-{
-    const currentDate = new Date();
-    const formattedDate = format(currentDate, "h:mm a M/d/yyyy");
-    return formattedDate;
-    
-}
+
 
 const allUsers = asyncHandler(async (req, res) => {
   const keyword = req.query.search
@@ -85,18 +78,18 @@ const registerUser = asyncHandler(async (req, res) => {
           users: [user._id, element._id],
         };
        const chat =  await Chat.create(chatData)
-        await Message.create({
+       await Message.create({
           sender: element._id,
-          content: `"Welcome to UG Support! 🌟
+          content: `Welcome to UG Support! 🌟
 
                     No problem is too big or too small for us to handle. Whether you have a question,
                     concern, or need assistance, our dedicated team is here to support you every step
                     of the way. Feel free to reach out anytime, and we'll ensure your experience
                     with us is nothing short of exceptional. Your satisfaction is our top priority!
-                    💬✨ #UGSupport"
+                    💬✨ #UGSupport
           `,
           chat: chat._id,
-          time:currentDateAndTimeFormatted(),
+          time:'',
           type:'TEXT'
      });
       });
