@@ -74,10 +74,10 @@ const registerUser = asyncHandler(async (req, res) => {
     {
 
     admins.forEach(async (element)=> {
-        var chatData = {
-          users: [user._id, element._id],
-        };
-       const chat =  await Chat.create(chatData)
+         
+       const chat = await Chat.create({
+        users: [user._id, element._id],
+      })
        await Message.create({
           sender: element._id,
           content: `Welcome to UG Support! 🌟
@@ -89,7 +89,7 @@ const registerUser = asyncHandler(async (req, res) => {
                     💬✨ #UGSupport
           `,
           chat: chat._id,
-          time:'',
+          time:'098',
           type:'TEXT'
      });
       });
