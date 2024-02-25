@@ -5,15 +5,19 @@ const Chat = require("../models/chatModel");
 const fs  = require('fs');
 const path = require("path");
 const cloudinary = require('cloudinary').v2;
-
+const { client }  = require('../config/redis')
 
 var newMessage;              
 
 
-
-
 const allMessages = asyncHandler(async (req, res) => {
-
+    const chat = await client.get(req.params.chatId);
+    if(chat)
+    {
+      return res.json(JSON.parse(chat))
+    }
+    else
+    {
     await Message.find({ chat: req.params.chatId })
       .populate("sender", "name pic email")
       .populate("chat").then(async (results) => {
@@ -21,11 +25,14 @@ const allMessages = asyncHandler(async (req, res) => {
           path: "chat.users",
           select: "name pic email",
         });
+        await client.set(req.params.chatId,JSON.stringify(results))
+        await client.expire(req.params.chatId,300)
         res.json(results);
       }).catch((e)=>{
         res.status(500);
         throw new Error(e.message);
       })
+    }
     });
  
 

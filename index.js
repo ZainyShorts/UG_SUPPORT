@@ -6,9 +6,11 @@ const { allMessages,sendMessage,deleteMessage,lastMessage,clearMessages} = requi
 const { protect } = require("./middleware/authMiddleware");
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const {connectToRedis} = require('./config/redis')
 require('dotenv').config();
 
 connectDB();
+connectToRedis()
 const app = express();
 app.use(bodyParser.json({ limit: '1000mb' }));
 app.use(bodyParser.urlencoded({ limit: '1000mb', extended: true }));
